@@ -2,9 +2,40 @@ plugins {
     id 'java-library'
 }
 
+sourceCompatibility = 17
+targetCompatibility = 17
+
+group = 'design.ore'
+version = '1.0.0'
+def packagename = 'OreNetBridge'
+def mainClass = "design.ore.OreNetBridge.NetsuiteAPI"
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.apache.httpcomponents:httpcore:4.4.16'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+	implementation 'org.apache.httpcomponents:httpmime:4.5.14'
+    implementation 'oauth.signpost:signpost-commonshttp4:2.1.1'
+    implementation 'oauth.signpost:signpost-core:2.1.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
+	implementation 'commons-io:commons-io:2.13.0'
+	implementation 'ch.qos.logback:logback-classic:1.4.11'
+	implementation 'ch.qos.logback:logback-core:1.4.11'
+}
+
+jar {
+	manifest {
+		attributes 'Plugin-Class': "${mainClass}",
+		'Plugin-Id': "${packagename}",
+		'Plugin-Version': "${version}",
+		'Plugin-Provider': "${group}",
+		'Plugin-Dependencies': ""
+	}
 }
