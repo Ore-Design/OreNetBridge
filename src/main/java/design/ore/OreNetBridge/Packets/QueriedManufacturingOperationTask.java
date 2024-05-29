@@ -1,6 +1,7 @@
 package design.ore.OreNetBridge.Packets;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -21,8 +22,11 @@ public class QueriedManufacturingOperationTask implements Comparable<QueriedManu
 	String operationSequence = "0";
 	String workOrder = "";
 	String status = "NOTSTART";
-	int inputQuantity = 0;
-	int completedQuantity = 0;
+	Integer inputQuantity = 0;
+	Integer completedQuantity = 0;
+	@JsonIgnore String description = null;
+	@JsonIgnore boolean disable = false;
+	@JsonIgnore String newWorkOrder = "";
 	
 	public int getSequenceAsInt()
 	{

@@ -19,12 +19,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WOCompletion
 {
-	double completedQuantity;
+	Double completedQuantity;
 	NsID startOperation;
 	NsID endOperation;
 	NsItemList<OperationCompletion> operation;
 	@JsonProperty("custbody_flore_user") NsID user;
 	@JsonProperty("custbody_flore_session") NsID flORESession;
-	@JsonProperty("custbody_flore_time") double time;
-	@JsonProperty("custbody_ore3d_soline_id") int associatedBuildUID;
+	@JsonProperty("custbody_flore_time") Double time;
+	@JsonProperty("custbody_ore3d_soline_id") Integer associatedBuildUID;
 }

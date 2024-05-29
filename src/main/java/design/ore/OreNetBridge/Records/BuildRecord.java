@@ -18,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BuildRecord
 {
-	public static final String NS_ENDPOINT = "customrecord_ore3d_build";
+	public static final String NetsuiteEndpoint = "customrecord_ore3d_build";
 	
 	public BuildRecord(String buildJson, NsID relatedTransaction)
 	{

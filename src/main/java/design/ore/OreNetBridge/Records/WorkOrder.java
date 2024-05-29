@@ -22,7 +22,6 @@ public class WorkOrder
 	@JsonProperty("custbody_ore3d_sales_order") NsID salesOrderID;
 	@JsonProperty("custbody_ore3d_child_item") NsID childAssembly;
 	@JsonProperty("custbody_parentwo") NsID parentWO;
-//	@JsonProperty("custbody_project_3") NsID project;
 	NsID manufacturingRouting;
 	NsID assemblyItem;
 	NsID location;
@@ -34,6 +33,7 @@ public class WorkOrder
 	@JsonProperty("isWip") boolean isWip;
 	@JsonProperty("custbody_exp_ship_date") String expectedShipDate;
 	@JsonProperty("custbodymx_cad_date_wo") String cutFileDate;
+	@JsonProperty("custbody_flore_notes") String notes;
 	String tranId;
 	String memo;
 	NsItemList<WorkOrderComponent> item;

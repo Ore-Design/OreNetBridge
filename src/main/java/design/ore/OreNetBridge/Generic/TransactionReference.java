@@ -20,5 +20,16 @@ public class TransactionReference
 	String id;
 	String type;
 	String entity;
+	@JsonProperty("custbody_flore_notes") String notes;
 	@JsonProperty("tranid") String name;
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof TransactionReference)) return false;
+		
+		TransactionReference ref = (TransactionReference) obj;
+		
+		return id.equals(ref.getId()) && type.equals(ref.getType()) && entity.equals(ref.getEntity()) && name.equals(ref.getName());
+	}
 }
