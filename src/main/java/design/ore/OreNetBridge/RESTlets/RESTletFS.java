@@ -1,9 +1,9 @@
 package design.ore.OreNetBridge.RESTlets;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import design.ore.OreNetBridge.NetsuiteAPI;
 import design.ore.OreNetBridge.Generic.NsID;
 import design.ore.OreNetBridge.Records.flORESession;
 import lombok.AllArgsConstructor;
@@ -35,92 +36,31 @@ public class RESTletFS
 		{
 			// 01/23/2023 10:37:00 am
 			DateTimeFormatter form = new DateTimeFormatterBuilder()
-			        .parseCaseInsensitive()
-			        .appendPattern("MM/dd/yyyy hh:mm:ss a")
-			        .toFormatter(Locale.US);
-			DateTimeFormatter formB = new DateTimeFormatterBuilder()
-			        .parseCaseInsensitive()
-			        .appendPattern("MM/dd/yyyy h:mm:ss a")
-			        .toFormatter(Locale.US);
+		        .parseCaseInsensitive()
+		        .appendPattern("MM/dd/yyyy h:mm:ss a")
+		        .toFormatter(Locale.US);
 			
-			LocalDateTime startTime = null;
-			LocalDateTime endTime = null;
-			
-			try
-			{
-				startTime = LocalDateTime.parse(values.startTime, form);
-			}
-			catch(DateTimeParseException e)
-			{
-				try
-				{
-					startTime = LocalDateTime.parse(values.startTime, formB);
-				}
-				catch(DateTimeParseException e1)
-				{
-					e1.printStackTrace();
-					throw new Exception("Error reading start time!");
-				}
-			}
+			OffsetDateTime startTime = LocalDateTime.parse(values.startTime, form).atZone(OffsetDateTime.now().getOffset()).toOffsetDateTime();
+			OffsetDateTime endTime = null;
 			
 			if(!values.endTime.equals(""))
-			{
-				try
-				{
-					endTime = LocalDateTime.parse(values.endTime, form);
-				}
-				catch(DateTimeParseException e)
-				{
-					try
-					{
-						endTime = LocalDateTime.parse(values.endTime, formB);
-					}
-					catch(DateTimeParseException e1)
-					{
-						throw new Exception("Error reading end time!");
-					}
-				}
-			}
+			{ endTime = LocalDateTime.parse(values.endTime, form).atZone(OffsetDateTime.now().getOffset()).toOffsetDateTime(); }
 			
 			double minutes = 0;
-			try
-			{
-				minutes = Double.parseDouble(values.minutes);
-			}
-			catch(NumberFormatException e)
-			{
-				minutes = 0;
-			}
+			try { minutes = Double.parseDouble(values.minutes); }
+			catch(NumberFormatException e) { minutes = 0; }
 			
 			double hours = 0;
-			try
-			{
-				hours = Double.parseDouble(values.hours);
-			}
-			catch(NumberFormatException e)
-			{
-				hours = 0;
-			}
+			try { hours = Double.parseDouble(values.hours); }
+			catch(NumberFormatException e) { hours = 0; }
 			
 			int qty = 0;
-			try
-			{
-				qty = Integer.parseInt(values.completed);
-			}
-			catch(NumberFormatException e)
-			{
-				qty = 0;
-			}
+			try { qty = Integer.parseInt(values.completed); }
+			catch(NumberFormatException e) { qty = 0; }
 			
 			int input = 0;
-			try
-			{
-				input = Integer.parseInt(values.quantity);
-			}
-			catch(NumberFormatException e)
-			{
-				input = 0;
-			}
+			try { input = Integer.parseInt(values.quantity); }
+			catch(NumberFormatException e) { input = 0; }
 			
 			NsID customer = null;
 			if(values.customer.size() > 0) customer = values.customer.get(0).toNsID();
@@ -129,7 +69,7 @@ public class RESTletFS
 		}
 		catch(Exception e)
 		{
-			System.err.println("Error converting RESTlet flORE Session into standard flORE Session!");
+			NetsuiteAPI.getLogger().error("Error converting RESTlet flORE Session into standard flORE Session!");
 			e.printStackTrace();
 			return null;
 		}

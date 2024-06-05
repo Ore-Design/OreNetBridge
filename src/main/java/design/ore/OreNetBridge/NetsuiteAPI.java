@@ -22,6 +22,7 @@ import design.ore.OreNetBridge.Generic.QueryResults;
 import design.ore.OreNetBridge.Records.NSEmployee;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 public class NetsuiteAPI
 {
@@ -35,6 +36,8 @@ public class NetsuiteAPI
 	private final String tokenSecret;
 	private final String accountRealm;
 	private final boolean debug;
+	
+	@Getter @Setter private NSEmployee currentUsingEmployee = null;
 	
 	@NonNull
 	public NetsuiteAPI(ObjectMapper mapper, Logger logger, String accountID, String consumerKey, String consumerSecret, String tokenID, String tokenSecret, String accountRealm, boolean debug)
@@ -178,7 +181,7 @@ public class NetsuiteAPI
 		
 		if(debug)
 		{
-	        logger.debug("Request URL: " + destination);
+	        logger.debug("Request URL: " + apiURL(endpoint, destination, method.equalsIgnoreCase("GET")));
 	        if(payload != null)
 	        {
 				try { logger.debug("Sending " + method + " request with body: " + mapper.writeValueAsString(payload)); }

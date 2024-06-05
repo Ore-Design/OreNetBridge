@@ -20,4 +20,14 @@ public class NsID
 	String refName;
 	
 	public NsID(String id) { this.id = id; }
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof NsID)) return false;
+		
+		NsID nsid = (NsID) obj;
+		
+		return nsid.getId().equals(id);
+	}
 }

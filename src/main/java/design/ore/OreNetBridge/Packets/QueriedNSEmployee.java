@@ -1,8 +1,7 @@
-package design.ore.OreNetBridge.Records;
+package design.ore.OreNetBridge.Packets;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import design.ore.OreNetBridge.Generic.NsID;
 import lombok.AllArgsConstructor;
@@ -16,9 +15,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NSEmployee
+public class QueriedNSEmployee
 {
 	String id;
-	NsID department;
-	@JsonProperty("custentity_ore3d_settings") String settings;
+	String entityId;
+	String department;
+	
+	public NsID toNsID() { return new NsID(id, entityId); }
 }
