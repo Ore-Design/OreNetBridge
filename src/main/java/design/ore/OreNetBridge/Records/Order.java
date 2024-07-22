@@ -17,20 +17,23 @@ import lombok.Setter;
 
 @JsonInclude(Include.NON_NULL)
 @NoArgsConstructor
+@Getter
+@Setter
 public class Order extends ValueStorageRecord
 {
-	@Getter @Setter NsID entity;
-	@Getter @Setter String id;
-	@Getter @Setter @JsonProperty("custbody_ore3d_pricingdata") String pricingData;
-	@Getter @Setter @JsonProperty("custbody_ore3d_version_flag") String versionFlag;
-	@Getter @Setter String email;
-	@Getter @Setter String tranId;
-	@Getter @Setter @JsonProperty("custbody_ore3d_tag_data")String tagData;
-	@Getter @Setter @JsonProperty("custbody_ore3d_record_is_locked") String recordIsLocked;
-	@Getter @Setter NSAddress billingAddress;
-	@Getter @Setter NSAddress shippingAddress;
-	@Getter @Setter NsItemList<LineItem> item;
-	@Getter @Setter LocalDate dueDate;
+	NsID entity;
+	String id;
+	@JsonProperty("custbody_ore3d_pricingdata") String pricingData;
+	@JsonProperty("custbody_ore3d_version_flag") String versionFlag;
+	String email;
+	String tranId;
+	@JsonProperty("custbody_ore3d_tag_data")String tagData;
+	@JsonProperty("custbody_ore3d_record_is_locked") String recordIsLocked;
+	NSAddress billingAddress;
+	NSAddress shippingAddress;
+	NsItemList<LineItem> item;
+	LocalDate dueDate;
+	@JsonProperty("custbody_ore3d_copied_from") NsID copiedFrom;
 	
 	public Order(String id, String tranId, String jsonPricing, NsID entityId, NSAddress billingAddress, NSAddress shippingAddress, NsItemList<LineItem> item, String versionFlag)
 	{

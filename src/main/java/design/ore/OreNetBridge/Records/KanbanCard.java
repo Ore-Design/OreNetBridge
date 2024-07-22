@@ -20,5 +20,6 @@ public class KanbanCard extends ValueStorageRecord
 {
 	String id;
 	@JsonProperty("custrecord_associated_kanban") NsID associatedItem;
+	@JsonProperty("custrecord_kanban_launcher") NsID launcher;
 	@JsonProperty("custrecord_kanban_completed") Boolean completed;
 }
