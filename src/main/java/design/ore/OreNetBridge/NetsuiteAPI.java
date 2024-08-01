@@ -383,8 +383,7 @@ public class NetsuiteAPI
         
         URI endUrl = apiURL(endpoint, destination, expandSubResources);
         
-        // TODO: Put this back to live...
-        String url = "http://localhost:8090/api/v1/consumertokenrealmsign?url=" + URLEncoder.encode(endUrl.toString(), Charset.defaultCharset()) + "&signer=1";
+        String url = "https://c.ore.design/api/v1/consumertokenrealmsign?url=" + URLEncoder.encode(endUrl.toString(), Charset.defaultCharset()) + "&signer=1";
 		long requestId = rand.nextLong();
         
         logger.debug("Request URL: " + url);
