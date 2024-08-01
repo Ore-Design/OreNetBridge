@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import javafx.util.Pair;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.http.HttpParameters;
@@ -24,7 +25,7 @@ public class OAuthBase
 {
 	protected Random random = new Random();
 	
-	public HttpRequestBase generateRequestBase(URI url, String consumerKey, String consumerSecret, String token, String tokenSecret, String httpMethod, String realm, Object payload) throws Exception
+	public Pair<Long, HttpRequestBase> generateRequestBase(URI url, String consumerKey, String consumerSecret, String token, String tokenSecret, String httpMethod, String realm, Object payload) throws Exception
 	{		
         OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
         consumer.setTokenWithSecret(token, tokenSecret);
@@ -80,7 +81,7 @@ public class OAuthBase
     	request.setHeader("Content-type", "application/json");
         request.setHeader("Prefer", "transient");
         consumer.sign(request);
-        return request;
+        return new Pair<>(random.nextLong(), request);
     }
     
     public String generateTimeStamp() { return String.valueOf(System.currentTimeMillis() / 1000L); }
