@@ -1,6 +1,6 @@
 package design.ore.OreNetBridge.Old;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,5 +18,5 @@ import lombok.Setter;
 @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
 public class TimestampOld
 {
-	OffsetDateTime dateTime;
+	Instant dateTime;
 }
