@@ -31,6 +31,7 @@ public class LineItem extends ValueStorageRecord
 	double amount;
 	@JsonProperty("custcol_ore3d_build") String buildJSON;
 	@JsonProperty("custcol_ore3d_build_record") NsID buildRecord;
+	@JsonProperty("custcol_ore3d_psr") NsID premiumShippingRecord;
 	@JsonProperty("custcol_ore3d_uid") Integer buildUID;
 	@JsonProperty("custcolhours_cad") Integer cadTime;
 	@JsonProperty("custcol_estnotes_customer") String customerNotes;
@@ -48,7 +49,6 @@ public class LineItem extends ValueStorageRecord
 	double quantity;
 	double rate;
 	@JsonProperty("custcol_square_feet") double squareFeet;
-//	@JsonProperty("custcol_ore3d_warnings") String warnings;
 	@JsonProperty("custcol_work_order_s") String childWorkOrders;
 	@JsonProperty("custcol_ore3d_work_order") NsID workOrder;
 }
