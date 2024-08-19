@@ -30,7 +30,6 @@ import design.ore.OreNetBridge.Generic.NsID;
 import design.ore.OreNetBridge.Generic.Query;
 import design.ore.OreNetBridge.Generic.QueryResults;
 import design.ore.OreNetBridge.Records.NSEmployee;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
