@@ -25,11 +25,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.Logger;
-import design.ore.OreNetBridge.Enums.NetsuiteEndpoint;
-import design.ore.OreNetBridge.Generic.NsID;
-import design.ore.OreNetBridge.Generic.Query;
-import design.ore.OreNetBridge.Generic.QueryResults;
-import design.ore.OreNetBridge.Records.NSEmployee;
+import design.ore.OreNetBridge.enums.NetsuiteEndpoint;
+import design.ore.OreNetBridge.generic.NsID;
+import design.ore.OreNetBridge.generic.Query;
+import design.ore.OreNetBridge.generic.QueryResults;
+import design.ore.OreNetBridge.records.NSEmployee;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -126,7 +126,6 @@ public class NetsuiteAPI
 				}
 				
 				if(response.getStatusLine().getStatusCode() != 429) break;
-				else break;
 			}
 			
 			if(response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
