@@ -65,7 +65,14 @@ public class RESTletFS
 			NsID customer = null;
 			if(values.customer.size() > 0) customer = values.customer.get(0).toNsID();
 			
-			return new flORESession(id, values.user.get(0).toNsID(), values.workOrder.get(0).toNsID(), customer, startTime, endTime, values.routingStep, minutes, hours, qty, input);
+			NsID associatedNCR = null;
+			if(values.associatedNCR != null && values.associatedNCR.size() > 0) associatedNCR = values.associatedNCR.get(0).toNsID();
+			
+			flORESession newSesh = new flORESession(id, values.user.get(0).toNsID(), values.workOrder.get(0).toNsID(), customer, startTime, endTime, values.routingStep, minutes, hours, qty, input);
+			
+			if(associatedNCR != null) newSesh.setAssociatedNCR(associatedNCR);
+			
+			return newSesh;
 		}
 		catch(Exception e)
 		{
@@ -94,5 +101,6 @@ public class RESTletFS
 		@JsonProperty("custrecord_flore_time_minutes") String minutes;
 		@JsonProperty("custrecord_flore_time_hours") String hours;
 		@JsonProperty("custrecord_flore_completed_qty") String completed;
+		@JsonProperty("custrecord_associated_ncr") List<RESTletNsID> associatedNCR;
 	}
 }

@@ -108,6 +108,9 @@ public class NetsuiteAPI
 		OAuthBase oAuth = new OAuthBase();
 		HttpResponse response = null;
 		
+		try { logger.debug("Sending location response request with payload: " + mapper.writeValueAsString(payload)); }
+		catch (JsonProcessingException e) { logger.warn(e.getMessage()); }
+		
 		try(CloseableHttpClient httpClient = HttpClients.createDefault())
 		{
 			Pair<Long, HttpRequestBase> requestBase = null;
@@ -156,7 +159,7 @@ public class NetsuiteAPI
 		{
 			T val;
 			try { val = mapper.readValue(responseJson, clazz); return Optional.of(val); }
-			catch (JsonProcessingException e) { logger.warn("Error parsing response JSON: " + Util.stackTraceArrayToString(e)); return Optional.empty(); }
+			catch (JsonProcessingException e) { logger.warn(Util.formatThrowable("Error parsing response JSON", e)); return Optional.empty(); }
 		}
 	}
 

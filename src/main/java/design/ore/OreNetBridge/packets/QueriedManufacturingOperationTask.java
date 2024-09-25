@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import design.ore.OreNetBridge.NetsuiteAPI;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,13 +28,18 @@ public class QueriedManufacturingOperationTask implements Comparable<QueriedManu
 	@JsonIgnore String description = null;
 	@JsonIgnore boolean disable = false;
 	@JsonIgnore String newWorkOrder = "";
+	@JsonIgnore Integer buildUID;
 	
 	public int getSequenceAsInt()
 	{
-		try { return Integer.parseInt(operationSequence); }
+		try
+		{
+			if(operationSequence.contains(":")) return Integer.parseInt(operationSequence.substring(0, operationSequence.indexOf(":")));
+			else return Integer.parseInt(operationSequence);
+		}
 		catch(NumberFormatException e)
 		{
-			e.printStackTrace();
+			NetsuiteAPI.getLogger().warn("Unable to parse operation sequence!");
 			return -1;
 		}
 	}

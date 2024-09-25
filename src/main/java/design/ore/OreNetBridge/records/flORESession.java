@@ -26,6 +26,7 @@ public class flORESession
 	String id;
 	@JsonProperty("custrecord_flore_user") NsID user;
 	@JsonProperty("custrecord_flore_work_order") NsID workOrder;
+	@JsonProperty("custrecord_associated_ncr") NsID associatedNCR;
 	@JsonProperty("custrecord_flore_start_time")
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss'Z'", timezone="UTC")
 	OffsetDateTime startTime;

@@ -22,6 +22,7 @@ import lombok.Setter;
 public class OperationSelectionData
 {
 	Map<TransactionReference, List<QueriedManufacturingOperationTask>> data = new HashMap<>();
+	boolean hasNCR = false;
 	
 	public void put(TransactionReference ref, List<QueriedManufacturingOperationTask> tasks) { data.put(ref, tasks); }
 }

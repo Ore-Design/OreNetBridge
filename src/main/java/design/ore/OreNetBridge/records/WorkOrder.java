@@ -34,6 +34,7 @@ public class WorkOrder
 	@JsonProperty("custbody_exp_ship_date") String expectedShipDate;
 	@JsonProperty("custbodymx_cad_date_wo") String cutFileDate;
 	@JsonProperty("custbody_flore_notes") String notes;
+	@JsonProperty("custbody_ore3d_soline_id") Integer associatedBuildUID;
 	String tranId;
 	String memo;
 	NsItemList<WorkOrderComponent> item;

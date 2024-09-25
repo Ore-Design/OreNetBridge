@@ -30,6 +30,9 @@ public class TransactionReference
 		
 		TransactionReference ref = (TransactionReference) obj;
 		
-		return id.equals(ref.getId()) && type.equals(ref.getType()) && entity.equals(ref.getEntity()) && name.equals(ref.getName());
+		return ((id == null && ref.id == null) || id.equals(ref.id)) &&
+				((type == null && ref.type == null) || type.equals(ref.type)) &&
+				((entity == null && ref.entity == null) || entity.equals(ref.entity)) &&
+				((name == null && ref.name == null) || name.equals(ref.name));
 	}
 }

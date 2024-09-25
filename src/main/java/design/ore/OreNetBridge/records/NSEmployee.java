@@ -1,5 +1,8 @@
 package design.ore.OreNetBridge.records;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,6 +22,17 @@ import lombok.Setter;
 public class NSEmployee
 {
 	String id;
+	String entityId;
 	NsID department;
 	@JsonProperty("custentity_ore3d_settings") String settings;
+	@JsonProperty("custentity_flore_pin") Integer florePin;
+	@JsonProperty("custentity_flore_perms") String florePerms;
+	
+	@JsonProperty("dept_") public void setDepartmentFromId(String id) { department = new NsID(id); }
+	
+	public List<String> getFlorePermsAsList()
+	{
+		if(florePerms == null) return List.of();
+		return Arrays.asList(florePerms.trim().split(","));
+	}
 }
