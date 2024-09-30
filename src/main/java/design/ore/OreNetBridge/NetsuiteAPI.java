@@ -216,6 +216,13 @@ public class NetsuiteAPI
 					usingServerSideRequestAuth ?
 					createServerAuthRequest(endpoint, method, destination, payload, method.equalsIgnoreCase("GET")) :
 					oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
+				
+				if(payload != null)
+				{
+					try { logger.debug("Sending request " + requestBase.getKey() + " with payload: " + mapper.writeValueAsString(payload)); }
+					catch (JsonProcessingException e) { logger.warn(e.getMessage()); }
+				}
+				
 		        response = httpClient.execute(requestBase.getValue());
 			
 				if(response == null)
@@ -229,7 +236,7 @@ public class NetsuiteAPI
 			
 			if(response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
 			{
-				logger.warn("Response " + requestBase.getKey() + " returned error!\n" + EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
+				logger.warn("Response " + requestBase.getKey() + " returned error code " + response.getStatusLine().getStatusCode() + "!\n" + EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
 				return "";
 			}
 			
