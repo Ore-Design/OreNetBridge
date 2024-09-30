@@ -219,7 +219,7 @@ public class NetsuiteAPI
 				
 				if(payload != null)
 				{
-					try { logger.debug("Sending request " + requestBase.getKey() + " with payload: " + mapper.writeValueAsString(payload)); }
+					try { logger.debug("Sending request " + requestBase.getKey() + " with payload: " + new String(mapper.writeValueAsBytes(payload), StandardCharsets.UTF_8)); }
 					catch (JsonProcessingException e) { logger.warn(e.getMessage()); }
 				}
 				
@@ -385,8 +385,8 @@ public class NetsuiteAPI
         StringEntity json = null;
         if(payload != null && !(httpMethod.equalsIgnoreCase("GET") || httpMethod.equalsIgnoreCase("DELETE")))
         {
-        	String jsonString = mapper.writeValueAsString(payload);
-        	json = new StringEntity(jsonString);
+        	byte[] jsonString = mapper.writeValueAsBytes(payload);
+        	json = new StringEntity(new String(jsonString, StandardCharsets.ISO_8859_1));
         }
         
         URI endUrl = apiURL(endpoint, destination, expandSubResources);
@@ -397,7 +397,7 @@ public class NetsuiteAPI
         logger.debug("Request URL: " + url);
         if(payload != null)
         {
-			try { logger.debug("Sending " + httpMethod + " request with id " + requestId + " and body: " + mapper.writeValueAsString(payload)); }
+			try { logger.debug("Sending " + httpMethod + " request with id " + requestId + " and body: " + new String(mapper.writeValueAsBytes(payload), StandardCharsets.ISO_8859_1)); }
 			catch (Exception e) { logger.warn(Util.formatThrowable("Error writing value to JSON!", e)); }
         }
 

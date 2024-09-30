@@ -1,6 +1,7 @@
 package design.ore.OreNetBridge;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import org.apache.http.client.methods.HttpDelete;
@@ -50,8 +51,8 @@ public class OAuthBase
         	map.registerModule(new JavaTimeModule());
         	map.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         	
-        	String jsonString = map.writeValueAsString(payload);
-        	json = new StringEntity(jsonString);
+        	byte[] jsonString = map.writeValueAsBytes(payload);
+        	json = new StringEntity(new String(jsonString, StandardCharsets.ISO_8859_1));
         }
         
         HttpRequestBase request;
