@@ -37,6 +37,7 @@ public class Order extends ValueStorageRecord
 	@JsonProperty("custbody_ore3d_edit_log") String editLog;
 	@JsonProperty("custbody_ore3d_save_cycle_count") Integer saveCycleCount;
 	@JsonProperty("custbody_so_flore_notes") String floreNotes;
+	Boolean shippingCostOverridden;
 	
 	public Order(String id, String tranId, String jsonPricing, NsID entityId, NSAddress billingAddress, NSAddress shippingAddress, NsItemList<LineItem> item, String versionFlag)
 	{
