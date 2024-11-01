@@ -2,17 +2,20 @@ package design.ore.OreNetBridge;
 
 public class Util
 {
-	public static String stackTraceArrayToString(Throwable e)
+	public static String throwableToString(Throwable e)
 	{
-		return stackTraceArrayToString(e.getStackTrace());
+		if(e.getCause() != null)
+			return e.getLocalizedMessage() + stackTraceArrayToString(e.getStackTrace()) + "\nCaused by: " +
+			e.getCause().getLocalizedMessage() + stackTraceArrayToString(e.getCause().getStackTrace());
+		return e.getLocalizedMessage() + stackTraceArrayToString(e.getStackTrace());
 	}
 
 	public static String stackTraceArrayToString(StackTraceElement[] e)
 	{
 		StringBuilder str = new StringBuilder();
-		for(StackTraceElement el : e) { str.append(el.toString() + "\n"); }
+		for(StackTraceElement el : e) { str.append("\n\t" + el.toString()); }
 		return str.toString();
 	}
 	
-	public static String formatThrowable(String userDefinedMessage, Throwable e) { return userDefinedMessage + " - " + e.getMessage() + "\n" + stackTraceArrayToString(e); }
+	public static String formatThrowable(String userDefinedMessage, Throwable e) { return userDefinedMessage + " - " + throwableToString(e); }
 }

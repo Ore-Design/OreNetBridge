@@ -146,7 +146,7 @@ public class NetsuiteAPI
 		}
 		catch (Exception e)
 		{
-			logger.info("Error parsing response data!\n" + Util.stackTraceArrayToString(e));
+			logger.info("Error parsing response data!\n" + Util.throwableToString(e));
 			return "";
 		}
 	}
@@ -177,7 +177,7 @@ public class NetsuiteAPI
 			
 			T val;
 			try { val = mapper.readValue(responseJson, clazz); return Optional.of(val); }
-			catch (JsonProcessingException e) { logger.warn("Error parsing response JSON: " + Util.stackTraceArrayToString(e)); return Optional.empty(); }
+			catch (JsonProcessingException e) { logger.warn("Error parsing response JSON: " + Util.throwableToString(e)); return Optional.empty(); }
 		}
 	}
 
@@ -194,7 +194,7 @@ public class NetsuiteAPI
 			else
 			{
 				try { totalResults.merge(mapper.readValue(responseJson, mapper.getTypeFactory().constructParametricType(QueryResults.class, clazz))); }
-				catch (JsonProcessingException e) { logger.warn("Error parsing response JSON: " + Util.stackTraceArrayToString(e)); return Optional.empty(); }
+				catch (JsonProcessingException e) { logger.warn("Error parsing response JSON: " + Util.throwableToString(e)); return Optional.empty(); }
 			}
 			offset += 1000;
 		}
@@ -240,10 +240,14 @@ public class NetsuiteAPI
 				return "";
 			}
 			
-			String responseJson = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-			logger.debug("Response Body: " + responseJson);
-			
-			return responseJson;
+			if(response.getEntity() != null)
+			{
+				String responseJson = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+				logger.debug("Response Body: " + responseJson);
+				
+				return responseJson;
+			}
+			else return "Success";
 		}
 		catch (Exception e)
 		{
@@ -275,7 +279,7 @@ public class NetsuiteAPI
 			}
 			
 			if(response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
-				return "Response Returned " + response.getStatusLine().getStatusCode() + ":\n" + response.getStatusLine().getReasonPhrase();
+				return "Response Returned " + response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase();
 			
 			return null;
 		}
