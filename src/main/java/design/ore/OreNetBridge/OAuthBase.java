@@ -26,7 +26,7 @@ public class OAuthBase
 	protected Random random = new Random();
 	
 	public Pair<Long, HttpRequestBase> generateRequestBase(URI url, String consumerKey, String consumerSecret, String token, String tokenSecret, String httpMethod, String realm, Object payload) throws Exception
-	{		
+	{
         OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
         consumer.setTokenWithSecret(token, tokenSecret);
         HmacSha256MessageSigner messageSigner = new HmacSha256MessageSigner();
@@ -84,6 +84,6 @@ public class OAuthBase
         return new Pair<>(random.nextLong(), request);
     }
     
-    public String generateTimeStamp() { return String.valueOf(System.currentTimeMillis() / 1000L); }
-    public String generateNonce() { return "" + random.nextInt(123400, 9999999); }
+	private String generateTimeStamp() { return String.valueOf(System.currentTimeMillis() / 1000L); }
+	private String generateNonce() { return "" + random.nextInt(123400, 9999999); }
 }

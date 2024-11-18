@@ -1,21 +1,12 @@
 package design.ore.OreNetBridge;
 
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Random;
-import java.util.function.Function;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -46,12 +37,6 @@ public class NetsuiteAPI
 	private final String tokenSecret;
 	private final String accountRealm;
 	
-	private final Function<HttpRequestBase, HttpRequestBase> authAttacher;
-	
-	private final boolean usingServerSideRequestAuth;
-	
-	private final Random rand = new Random();
-	
 	@Getter @Setter private NSEmployee currentUsingEmployee = null;
 	
 	@NonNull
@@ -65,42 +50,27 @@ public class NetsuiteAPI
 		this.tokenID = tokenID;
 		this.tokenSecret = tokenSecret;
 		this.accountRealm = accountRealm;
-		this.usingServerSideRequestAuth = false;
-		this.authAttacher = null;
-	}
-	
-	@NonNull
-	public NetsuiteAPI(ObjectMapper mapper, Logger logger, String accountID, String accountRealm, Function<HttpRequestBase, HttpRequestBase> authAttacher)
-	{
-		NetsuiteAPI.mapper = mapper;
-		NetsuiteAPI.logger = logger;
-		this.accountID = accountID;
-		this.consumerKey = null;
-		this.consumerSecret = null;
-		this.tokenID = null;
-		this.tokenSecret = null;
-		this.accountRealm = accountRealm;
-		this.usingServerSideRequestAuth = true;
-		this.authAttacher = authAttacher;
 	}
 	
 	public URI apiURL(NetsuiteEndpoint endpoint, String destination, boolean expandSubResources)
 	{
-		try
+		try { return new URI(apiURLRaw(endpoint, destination, expandSubResources)); }
+		catch (Exception e) { logger.error(e.toString()); return null; }
+	}
+	
+	public String apiURLRaw(NetsuiteEndpoint endpoint, String destination, boolean expandSubResources) throws Exception
+	{
+		if(endpoint == NetsuiteEndpoint.QUERY) return "https://" + accountID +
+			".suitetalk.api.netsuite.com/services/rest/query/v1/suiteql?limit=1000" + (destination == null ? "" : destination);
+		else if(endpoint == NetsuiteEndpoint.RESTlet) return "https://" + accountID +
+			".restlets.api.netsuite.com/app/site/hosting/restlet.nl?" + destination;
+		else if(endpoint == NetsuiteEndpoint.RECORD)
 		{
-			if(endpoint == NetsuiteEndpoint.QUERY) return new URI("https://" + accountID +
-				".suitetalk.api.netsuite.com/services/rest/query/v1/suiteql?limit=1000" + (destination == null ? "" : destination));
-			else if(endpoint == NetsuiteEndpoint.RESTlet) return new URI("https://" + accountID +
-				".restlets.api.netsuite.com/app/site/hosting/restlet.nl?" + destination);
-			else if(endpoint == NetsuiteEndpoint.RECORD)
-			{
-				String url = "https://" + accountID + ".suitetalk.api.netsuite.com/services/rest/record/v1/" + destination;
-				if(expandSubResources) url += "?expandSubResources=true";
-				return new URI(url);
-			}
-			else throw new Exception("Invalid NetSuite endpoint " + endpoint + "!");
+			String url = "https://" + accountID + ".suitetalk.api.netsuite.com/services/rest/record/v1/" + destination;
+			if(expandSubResources) url += "?expandSubResources=true";
+			return url;
 		}
-		catch (Exception e) { e.printStackTrace(); return null; }
+		else throw new Exception("Invalid NetSuite endpoint " + endpoint + "!");
 	}
 
 	public String restLocationResponse(String destination, String method, Object payload, NetsuiteEndpoint endpoint)
@@ -116,10 +86,7 @@ public class NetsuiteAPI
 			Pair<Long, HttpRequestBase> requestBase = null;
 			while(true)
 			{
-				requestBase =
-					usingServerSideRequestAuth ?
-					createServerAuthRequest(endpoint, method, destination, payload, method.equalsIgnoreCase("GET")) :
-					oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
+				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
 		        response = httpClient.execute(requestBase.getValue());
 			
 				if(response == null)
@@ -212,10 +179,7 @@ public class NetsuiteAPI
 		{
 			while(true)
 			{
-				requestBase =
-					usingServerSideRequestAuth ?
-					createServerAuthRequest(endpoint, method, destination, payload, method.equalsIgnoreCase("GET")) :
-					oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
+				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);
 				
 				if(payload != null)
 				{
@@ -267,10 +231,7 @@ public class NetsuiteAPI
 		{
 			while(true)
 			{
-				Pair<Long, HttpRequestBase> requestBase =
-					usingServerSideRequestAuth ?
-					createServerAuthRequest(endpoint, method, destination, payload, method.equalsIgnoreCase("GET")) :
-					oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
+				Pair<Long, HttpRequestBase> requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);
 		        response = httpClient.execute(requestBase.getValue());
 		        
 				if(response == null) return "Response returned null!";
@@ -310,10 +271,7 @@ public class NetsuiteAPI
 				URI dest = apiURL(endpoint, destination, method.equalsIgnoreCase("GET"));
 				logger.debug("Sending request: " + dest.toString());
 
-				requestBase =
-					usingServerSideRequestAuth ?
-					createServerAuthRequest(endpoint, method, destination, payload, method.equalsIgnoreCase("GET")) :
-					oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
+				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);
 		        response = httpClient.execute(requestBase.getValue());
 			
 				if(response == null)
@@ -382,56 +340,5 @@ public class NetsuiteAPI
 		
 		if(results.isPresent() && results.get().getItems().size() == 1) return results.get().getItems().get(0);
 		else return null;
-	}
-	
-	private Pair<Long, HttpRequestBase> createServerAuthRequest(NetsuiteEndpoint endpoint, String httpMethod, String destination, Object payload, boolean expandSubResources) throws Exception
-	{
-        StringEntity json = null;
-        if(payload != null && !(httpMethod.equalsIgnoreCase("GET") || httpMethod.equalsIgnoreCase("DELETE")))
-        {
-        	byte[] jsonString = mapper.writeValueAsBytes(payload);
-        	json = new StringEntity(new String(jsonString, StandardCharsets.ISO_8859_1));
-        }
-        
-        URI endUrl = apiURL(endpoint, destination, expandSubResources);
-        
-        String url = "https://c.ore.design/api/v1/consumertokenrealmsign?url=" + URLEncoder.encode(endUrl.toString(), Charset.defaultCharset()) + "&signer=1";
-		long requestId = rand.nextLong();
-        
-        logger.debug("Request URL: " + url);
-        if(payload != null)
-        {
-			try { logger.debug("Sending " + httpMethod + " request with id " + requestId + " and body: " + new String(mapper.writeValueAsBytes(payload), StandardCharsets.ISO_8859_1)); }
-			catch (Exception e) { logger.warn(Util.formatThrowable("Error writing value to JSON!", e)); }
-        }
-
-        HttpRequestBase request;
-        if(httpMethod.toUpperCase().equals("GET"))
-        {
-        	request = new HttpGet(url);
-        }
-        else if(httpMethod.toUpperCase().equals("POST"))
-        {
-        	request = new HttpPost(url);
-            if(json != null) ((HttpPost) request).setEntity(json);
-        }
-        else if(httpMethod.toUpperCase().equals("PATCH"))
-        {
-        	request = new HttpPatch(url);
-            if(json != null) ((HttpPatch) request).setEntity(json);
-        }
-        else if(httpMethod.toUpperCase().equals("DELETE"))
-        {
-        	request = new HttpDelete(url);
-        }
-        else
-        {
-        	throw new Exception("Unhandled REST method " + httpMethod);
-        }
-    	request.setHeader("Content-Type", "application/json");
-        request.setHeader("Prefer", "transient");
-        request = authAttacher.apply(request);
-        
-        return new Pair<>(requestId, request);
 	}
 }

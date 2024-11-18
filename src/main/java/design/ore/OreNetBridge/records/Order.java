@@ -34,6 +34,7 @@ public class Order extends ValueStorageRecord
 	NsItemList<LineItem> item;
 	LocalDate dueDate;
 	@JsonProperty("custbody_ore3d_copied_from") NsID copiedFrom;
+	@JsonProperty("custbody_sales_process_status") NsID salesStatus;
 	@JsonProperty("custbody_ore3d_edit_log") String editLog;
 	@JsonProperty("custbody_ore3d_save_cycle_count") Integer saveCycleCount;
 	@JsonProperty("custbody_so_flore_notes") String floreNotes;

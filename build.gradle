@@ -6,7 +6,7 @@ sourceCompatibility = 21
 targetCompatibility = 21
 
 group = 'design.ore'
-version = '1.1.5'
+version = '1.1.6'
 def packagename = 'OreNetBridge'
 def mainClass = "design.ore.OreNetBridge.NetsuiteAPI"
 
