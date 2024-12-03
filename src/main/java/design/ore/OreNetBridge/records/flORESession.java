@@ -38,7 +38,7 @@ public class flORESession
 	@JsonProperty("custrecord_flore_time_hours") double hours;
 	@JsonProperty("custrecord_flore_completed_qty") int completed;
 	@JsonIgnore boolean selected;
-	@JsonIgnore NsID customer;
+	@JsonIgnore protected NsID customer;
 	@JsonIgnore int requiredQty;
 	@JsonProperty("custrecord_flore_wocompletion") NsID completion;
 

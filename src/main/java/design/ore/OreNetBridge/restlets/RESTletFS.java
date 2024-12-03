@@ -63,7 +63,11 @@ public class RESTletFS
 			catch(NumberFormatException e) { input = 0; }
 			
 			NsID customer = null;
-			if(values.customer.size() > 0) customer = values.customer.get(0).toNsID();
+			if(values.customer.size() > 0)
+			{
+				NetsuiteAPI.getLogger().debug("Found customer for FS!");
+				customer = values.customer.get(0).toNsID();
+			}
 			
 			NsID associatedNCR = null;
 			if(values.associatedNCR != null && values.associatedNCR.size() > 0) associatedNCR = values.associatedNCR.get(0).toNsID();
