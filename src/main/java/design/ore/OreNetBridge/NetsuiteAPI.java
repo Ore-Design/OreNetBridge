@@ -13,6 +13,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.Logger;
@@ -195,7 +196,27 @@ public class NetsuiteAPI
 					return "";
 				}
 				
-				if(response.getStatusLine().getStatusCode() != 429) break;
+				boolean errorCodeIsRequestLimit = false;
+				
+				if(response.getStatusLine().getStatusCode() != 400)
+				{
+					try
+					{
+						JsonNode responseNode = mapper.readTree(EntityUtils.toString(response.getEntity()));
+						if(responseNode == null) throw new Exception("No valid node!");
+						
+						JsonNode errorNode = responseNode.get("error");
+						if(errorNode == null) throw new Exception("No valid error node!");
+						
+						JsonNode messageNode = errorNode.get("message");
+						if(messageNode == null) throw new Exception("No valid message node!");
+						
+						errorCodeIsRequestLimit = messageNode.asText().toLowerCase().contains("request limit exceeded");
+					}
+					catch(Exception e) { /* Ignore, error code isn't request limit exceeded. */ }
+				}
+				
+				if(response.getStatusLine().getStatusCode() != 429 && !errorCodeIsRequestLimit) break;
 			}
 			
 			if(response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
