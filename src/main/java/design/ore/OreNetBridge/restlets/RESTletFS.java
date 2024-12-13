@@ -1,11 +1,7 @@
 package design.ore.OreNetBridge.restlets;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
+import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -33,18 +29,12 @@ public class RESTletFS
 	public flORESession toflORESession()
 	{
 		try
-		{
-			// 01/23/2023 10:37:00 am
-			DateTimeFormatter form = new DateTimeFormatterBuilder()
-		        .parseCaseInsensitive()
-		        .appendPattern("MM/dd/yyyy h:mm:ss a")
-		        .toFormatter(Locale.US);
-			
-			OffsetDateTime startTime = LocalDateTime.parse(values.startTime, form).atZone(OffsetDateTime.now().getOffset()).toOffsetDateTime();
-			OffsetDateTime endTime = null;
+		{	
+			Instant startTime = Instant.parse(values.startTime);
+			Instant endTime = null;
 			
 			if(!values.endTime.equals(""))
-			{ endTime = LocalDateTime.parse(values.endTime, form).atZone(OffsetDateTime.now().getOffset()).toOffsetDateTime(); }
+			{ endTime = Instant.parse(values.endTime); }
 			
 			double minutes = 0;
 			try { minutes = Double.parseDouble(values.minutes); }

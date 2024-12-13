@@ -15,10 +15,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueriedNSEmployee
+public class QueriedDepartmentResponsible
 {
-	String id, name, department;
+	String id, entityId, department;
 	Integer dayMinGoalOverride, weekMinGoalOverride;
 	
-	public NsID toNsID() { return new NsID(id, name); }
+	public NsID toNsID() { return new NsID(id, entityId); }
 }

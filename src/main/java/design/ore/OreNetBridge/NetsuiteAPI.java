@@ -178,6 +178,8 @@ public class NetsuiteAPI
 		Pair<Long, HttpRequestBase> requestBase = null;
 		try(CloseableHttpClient httpClient = HttpClients.createDefault())
 		{
+			
+			String responseBody = "";
 			while(true)
 			{
 				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);
@@ -196,13 +198,15 @@ public class NetsuiteAPI
 					return "";
 				}
 				
+				responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+				
 				boolean errorCodeIsRequestLimit = false;
 				
 				if(response.getStatusLine().getStatusCode() != 400)
 				{
 					try
 					{
-						JsonNode responseNode = mapper.readTree(EntityUtils.toString(response.getEntity()));
+						JsonNode responseNode = mapper.readTree(responseBody);
 						if(responseNode == null) throw new Exception("No valid node!");
 						
 						JsonNode errorNode = responseNode.get("error");
@@ -221,16 +225,15 @@ public class NetsuiteAPI
 			
 			if(response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
 			{
-				logger.warn("Response " + requestBase.getKey() + " returned error code " + response.getStatusLine().getStatusCode() + "!\n" + EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
+				logger.warn("Response " + requestBase.getKey() + " returned error code " + response.getStatusLine().getStatusCode() + "!\n" + responseBody);
 				return "";
 			}
 			
 			if(response.getEntity() != null)
 			{
-				String responseJson = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-				logger.debug("Response Body: " + responseJson);
+				logger.debug("Response Body: " + responseBody);
 				
-				return responseJson;
+				return responseBody;
 			}
 			else return "Success";
 		}

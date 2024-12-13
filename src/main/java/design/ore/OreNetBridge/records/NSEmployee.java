@@ -31,6 +31,8 @@ public class NSEmployee
 	@JsonProperty("custentity_ore3d_settings") String settings;
 	@JsonProperty("custentity_flore_pin") Integer florePin;
 	@JsonProperty("custentity_flore_perms") String florePerms;
+	@JsonProperty("custentity_flore_day_goal_override") Integer dayMinGoalOverride;
+	@JsonProperty("custentity_flore_week_time_goal_override") Integer weekMinGoalOverride;
 	
 	@JsonProperty("dept_") public void setDepartmentFromId(String id) { department = new NsID(id); }
 	
