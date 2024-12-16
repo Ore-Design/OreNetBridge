@@ -1,6 +1,5 @@
 package design.ore.OreNetBridge.packets;
 
-import java.text.MessageFormat;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import design.ore.OreNetBridge.NetsuiteAPI;
 import design.ore.OreNetBridge.generic.NsID;
 import design.ore.OreNetBridge.records.flORESession;
 import lombok.AllArgsConstructor;
@@ -29,9 +27,9 @@ public class QueriedflORESession
 	
 	Integer buildUuid;
 	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss", timezone="UTC")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss xxx")
 	Instant startTime;
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss", timezone="UTC")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss xxx")
 	Instant endTime;
 
 	String routingStep;
@@ -42,13 +40,16 @@ public class QueriedflORESession
 	@JsonIgnore
 	public static String openSessionByUserIdQuery(String id)
 	{
+		// TODO: Replace WO retrieval with backdated after update
+		// LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_associated_wo\s
+		
 		String query = """
 			SELECT\s
 				customrecord_flore_session.id,\s
 				custrecord_flore_completed_qty AS completed,\s
-				TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD"T"HH:mm:SS') AS endTime,\s
+				TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD HH24:mm:SS TZH:TZM') AS endTime,\s
 				custrecord_flore_routing_step AS routingStep,\s
-				TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD"T"HH:mm:SS') AS startTime,\s
+				TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD HH24:mm:SS TZH:TZM') AS startTime,\s
 				custrecord_flore_time_hours AS hours,\s
 				custrecord_flore_time_minutes AS minutes,\s
 				custrecord_flore_user AS userId,\s
@@ -76,7 +77,7 @@ public class QueriedflORESession
 				FROM customrecord_flore_session\s
 				
 				LEFT JOIN Transaction AS so ON so.id = custrecord_flore_associated_so\s
-				LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_associated_wo\s
+				LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_work_order\s
 				LEFT JOIN Transaction AS pr ON pr.id = custrecord_flore_associated_pr\s
 				
 				WHERE custrecord_flore_user LIKE\s""" + id + "\sAND custrecord_flore_end_time IS NULL";
@@ -92,12 +93,14 @@ public class QueriedflORESession
 
 		if(proposalId != null && !proposalId.equals("")) session.setAssociatedProposal(new NsID(proposalId, proposalName));
 		if(salesOrderId != null && !salesOrderId.equals("")) session.setAssociatedSO(new NsID(salesOrderId, salesOrderName));
-		if(workOrderId != null && !workOrderId.equals("")) session.setAssociatedWO(new NsID(workOrderId, workOrderName));
+		if(workOrderId != null && !workOrderId.equals(""))
+		{
+			session.setAssociatedWO(new NsID(workOrderId, workOrderName));
+			session.setWorkOrder(new NsID(workOrderId, workOrderName));
+		}
 		
 		if(buildRecordId != null && !buildRecordId.equals("")) session.setBuildRecord(new NsID(buildRecordId, buildRecordName));
 		if(buildUuid != null) session.setBuildUuid(buildUuid);
-		
-		NetsuiteAPI.getLogger().debug(MessageFormat.format("Session Items - PR: {0} - SO: {1} - WO: {2} ", session.getAssociatedProposal(), session.getAssociatedSO(), session.getAssociatedWO()));
 		
 		return session;
 	}
