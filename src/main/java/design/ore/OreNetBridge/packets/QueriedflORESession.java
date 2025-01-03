@@ -47,9 +47,9 @@ public class QueriedflORESession
 			SELECT\s
 				customrecord_flore_session.id,\s
 				custrecord_flore_completed_qty AS completed,\s
-				TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD HH24:mm:SS TZH:TZM') AS endTime,\s
+				TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS endTime,\s
 				custrecord_flore_routing_step AS routingStep,\s
-				TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD HH24:mm:SS TZH:TZM') AS startTime,\s
+				TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS startTime,\s
 				custrecord_flore_time_hours AS hours,\s
 				custrecord_flore_time_minutes AS minutes,\s
 				custrecord_flore_user AS userId,\s

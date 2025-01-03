@@ -1,5 +1,7 @@
 package design.ore.OreNetBridge.generic;
 
+import java.text.MessageFormat;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -30,4 +32,6 @@ public class NsID
 		
 		return nsid.getId().equals(id);
 	}
+	
+	@Override public String toString() { return MessageFormat.format("[ {0} - {1} ]", id, refName); }
 }

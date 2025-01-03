@@ -80,13 +80,21 @@ public class flORESession
 		this.completed = completed;
 		this.requiredQty = requiredQty;
 	}
-	public flORESession(String id, NsID user, NsID workOrder, String routingStep)
+	public flORESession(String id, NsID user, NsID associatedRecord, String routingStep)
 	{
 		this.id = id;
 		this.user = user;
-		this.workOrder = workOrder;
+		this.workOrder = associatedRecord;
 		this.startTime = Instant.now();
 		this.routingStep = routingStep;
+		
+		if(associatedRecord.getRefName() != null && !associatedRecord.getRefName().equals(""))
+		{
+			String upperName = associatedRecord.getRefName().toUpperCase();
+			if(upperName.startsWith("WO")) associatedWO = associatedRecord;
+			else if(upperName.startsWith("S")) associatedSO = associatedRecord;
+			else associatedProposal = associatedRecord;
+		}
 	}
 	
 	@JsonIgnore public long getCurrentElapsedMinutes()
