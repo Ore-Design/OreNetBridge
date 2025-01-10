@@ -38,16 +38,6 @@ dependencies {
 	implementation 'ch.qos.logback:logback-core:1.4.11'
 }
 
-jar {
-	manifest {
-		attributes
-			'Plugin-Id': "${packagename}",
-			'Plugin-Version': "${version}",
-			'Plugin-Provider': "${group}",
-			'Plugin-Dependencies': ""
-	}
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
