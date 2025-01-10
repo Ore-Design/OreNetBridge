@@ -1,0 +1,26 @@
+name: Publish to Maven Central
+on:
+  release:
+    types: [ created ]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup JDK 21 for deploy to Sonatype
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21.0.4'
+          distribution: 'zulu'
+          java-package: 'jdk+fx'
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+      - name:  Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Gradle Publish to Maven Central Portal Sonatype
+        env:
+            ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+            ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+            ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+            ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+        run: ./gradlew publishToMavenCentralPortal
