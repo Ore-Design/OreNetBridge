@@ -1,14 +1,22 @@
 plugins {
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'tech.yanand.maven-central-publish' version '1.3.0'
 }
 
 sourceCompatibility = 21
 targetCompatibility = 21
 
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
 group = 'design.ore'
 version = '1.1.7'
-def packagename = 'OreNetBridge'
-def mainClass = "design.ore.OreNetBridge.NetsuiteAPI"
+def packagename = 'orenetbridge'
+archivesBaseName = "${packageName}"
 
 repositories {
     mavenCentral()
@@ -32,10 +40,50 @@ dependencies {
 
 jar {
 	manifest {
-		attributes 'Plugin-Class': "${mainClass}",
-		'Plugin-Id': "${packagename}",
-		'Plugin-Version': "${version}",
-		'Plugin-Provider': "${group}",
-		'Plugin-Dependencies': ""
+		attributes
+			'Plugin-Id': "${packagename}",
+			'Plugin-Version': "${version}",
+			'Plugin-Provider': "${group}",
+			'Plugin-Dependencies': ""
 	}
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+			from components.java
+			pom {
+		        name = 'OreNetBridge'
+		        description = "Ore Design to NetSuite logical library"
+                url = 'http://c.ore.design'
+                licenses {
+                    license {
+                        name = 'GNU General Public License, Version 3'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html#license-text'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'jbatista'
+                        name = 'Jacob Batista'
+                        email = 'jbatista@ore.design'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/Ore-Design/OreNetBridge.git'
+                    developerConnection = 'scm:git:ssh://github.com/Ore-Design/OreNetBridge.git'
+                    url = 'http://c.ore.design'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useInMemoryPgpKeys(findProperty('signingKey'), findProperty('signingPassword'))
+    sign publishing.publications.mavenJava
+}
+
+mavenCentral {
+    authToken = (findProperty('sonatypeUsername') + ':' + findProperty('sonatypePassword')).bytes.encodeBase64().toString()
 }

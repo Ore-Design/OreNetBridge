@@ -43,10 +43,12 @@ public class flORESession
 	@JsonProperty("custrecord_flore_wocompletion") NsID completion;
 	@JsonProperty("custrecord_flore_build_record") NsID buildRecord;
 	@JsonProperty("custrecord_flore_build_uuid") Integer buildUuid;
+	@JsonProperty("custrecord_fs_paused_min") Integer pausedMin;
 	
 	@JsonProperty("custrecord_flore_associated_wo") NsID associatedWO;
 	@JsonProperty("custrecord_flore_associated_so") NsID associatedSO;
 	@JsonProperty("custrecord_flore_associated_pr") NsID associatedProposal;
+	@JsonProperty("custrecord_flore_line_item_name") String lineItemName;
 	
 	@JsonIgnore boolean selected;
 	@JsonIgnore protected NsID customer;
