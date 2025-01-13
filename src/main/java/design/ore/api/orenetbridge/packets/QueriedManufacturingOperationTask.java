@@ -25,7 +25,7 @@ public class QueriedManufacturingOperationTask implements Comparable<QueriedManu
 	String status = "NOTSTART";
 	Integer inputQuantity = 0;
 	Integer completedQuantity = 0;
-	@JsonIgnore String description = null;
+	String description = null;
 	@JsonIgnore boolean disable = false;
 	@JsonIgnore String newWorkOrder = "";
 	@JsonIgnore Integer buildUID;

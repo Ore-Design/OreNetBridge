@@ -18,9 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TransactionReference
 {
-	String id;
-	String type;
-	String entity;
+	String id, type, entity;
 	@JsonAlias({"custbody_flore_notes", "custbody_so_flore_notes"}) String notes;
 	@JsonProperty("tranid") String name;
 	

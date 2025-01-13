@@ -23,7 +23,7 @@ import lombok.Setter;
 public class QueriedflORESession
 {	
 	@JsonProperty String id, userId, userName, entityId, entityName, proposalId, proposalName, salesOrderId, salesOrderName,
-		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName;
+		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName, oneDriveLink;
 	
 	Integer buildUuid;
 	
@@ -36,6 +36,46 @@ public class QueriedflORESession
 	double minutes;
 	double hours;
 	int completed;
+	
+	private final static String commonQueryData = """
+		SELECT\s
+			customrecord_flore_session.id,\s
+			custrecord_flore_completed_qty AS completed,\s
+			custrecord_flore_line_item_name AS lineName,\s
+			TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS endTime,\s
+			custrecord_flore_routing_step AS routingStep,\s
+			custrecord_fs_onedrive_link AS oneDriveLink,\s
+			TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS startTime,\s
+			custrecord_flore_time_hours AS hours,\s
+			custrecord_flore_time_minutes AS minutes,\s
+			custrecord_flore_user AS userId,\s
+			BUILTIN.DF(custrecord_flore_user) AS userName,\s
+			custrecord_associated_ncr AS ncrId,\s
+			BUILTIN.DF(custrecord_associated_ncr) AS ncrName,\s
+			custrecord_flore_wocompletion AS completionId,\s
+			BUILTIN.DF(custrecord_flore_wocompletion) AS completionName,\s
+			custrecord_flore_build_record AS buildRecordId,\s
+			BUILTIN.DF(custrecord_flore_build_record) AS buildRecordName,\s
+			custrecord_flore_build_uuid AS buildUuid,\s
+			
+			pr.id AS proposalId,\s
+			pr.tranid AS proposalName,\s
+			
+			so.id AS salesOrderId,\s
+			so.tranid AS salesOrderName,\s
+			
+			wo.id AS workOrderId,\s
+			wo.tranid AS workOrderName,\s
+				
+			wo.entity AS entityId,\s
+			BUILTIN.DF(wo.entity) AS entityName\s
+			
+			FROM customrecord_flore_session\s
+			
+			LEFT JOIN Transaction AS so ON so.id = custrecord_flore_associated_so\s
+			LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_work_order\s
+			LEFT JOIN Transaction AS pr ON pr.id = custrecord_flore_associated_pr\s
+		""";
 
 	@JsonIgnore
 	public static String openSessionByUserIdQuery(String id)
@@ -43,44 +83,7 @@ public class QueriedflORESession
 		// TODO: Replace WO retrieval with backdated after update
 		// LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_associated_wo\s
 		
-		String query = """
-			SELECT\s
-				customrecord_flore_session.id,\s
-				custrecord_flore_completed_qty AS completed,\s
-				TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS endTime,\s
-				custrecord_flore_routing_step AS routingStep,\s
-				TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS startTime,\s
-				custrecord_flore_time_hours AS hours,\s
-				custrecord_flore_time_minutes AS minutes,\s
-				custrecord_flore_user AS userId,\s
-				BUILTIN.DF(custrecord_flore_user) AS userName,\s
-				custrecord_associated_ncr AS ncrId,\s
-				BUILTIN.DF(custrecord_associated_ncr) AS ncrName,\s
-				custrecord_flore_wocompletion AS completionId,\s
-				BUILTIN.DF(custrecord_flore_wocompletion) AS completionName,\s
-				custrecord_flore_build_record AS buildRecordId,\s
-				BUILTIN.DF(custrecord_flore_build_record) AS buildRecordName,\s
-				custrecord_flore_build_uuid AS buildUuid,\s
-				
-				pr.id AS proposalId,\s
-				pr.tranid AS proposalName,\s
-				
-				so.id AS salesOrderId,\s
-				so.tranid AS salesOrderName,\s
-				
-				wo.id AS workOrderId,\s
-				wo.tranid AS workOrderName,\s
-					
-				wo.entity AS entityId,\s
-				BUILTIN.DF(wo.entity) AS entityName\s
-				
-				FROM customrecord_flore_session\s
-				
-				LEFT JOIN Transaction AS so ON so.id = custrecord_flore_associated_so\s
-				LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_work_order\s
-				LEFT JOIN Transaction AS pr ON pr.id = custrecord_flore_associated_pr\s
-				
-				WHERE custrecord_flore_user LIKE\s""" + id + "\sAND custrecord_flore_end_time IS NULL";
+		String query = commonQueryData + "WHERE custrecord_flore_user LIKE " + id + " AND custrecord_flore_end_time IS NULL";
 		
 		query = query.replace("\n", "").replace("\t", "");
 		return query;
@@ -89,44 +92,7 @@ public class QueriedflORESession
 	@JsonIgnore
 	public static String getSessionByIdWithData(String id)
 	{
-		String query = """
-			SELECT\s
-				customrecord_flore_session.id,\s
-				custrecord_flore_completed_qty AS completed,\s
-				TO_CHAR(custrecord_flore_end_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS endTime,\s
-				custrecord_flore_routing_step AS routingStep,\s
-				TO_CHAR(custrecord_flore_start_time, 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS startTime,\s
-				custrecord_flore_time_hours AS hours,\s
-				custrecord_flore_time_minutes AS minutes,\s
-				custrecord_flore_user AS userId,\s
-				BUILTIN.DF(custrecord_flore_user) AS userName,\s
-				custrecord_associated_ncr AS ncrId,\s
-				BUILTIN.DF(custrecord_associated_ncr) AS ncrName,\s
-				custrecord_flore_wocompletion AS completionId,\s
-				BUILTIN.DF(custrecord_flore_wocompletion) AS completionName,\s
-				custrecord_flore_build_record AS buildRecordId,\s
-				BUILTIN.DF(custrecord_flore_build_record) AS buildRecordName,\s
-				custrecord_flore_build_uuid AS buildUuid,\s
-				
-				pr.id AS proposalId,\s
-				pr.tranid AS proposalName,\s
-				
-				so.id AS salesOrderId,\s
-				so.tranid AS salesOrderName,\s
-				
-				wo.id AS workOrderId,\s
-				wo.tranid AS workOrderName,\s
-					
-				wo.entity AS entityId,\s
-				BUILTIN.DF(wo.entity) AS entityName\s
-				
-				FROM customrecord_flore_session\s
-				
-				LEFT JOIN Transaction AS so ON so.id = custrecord_flore_associated_so\s
-				LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_work_order\s
-				LEFT JOIN Transaction AS pr ON pr.id = custrecord_flore_associated_pr\s
-				
-				WHERE customrecord_flore_session.id LIKE\s""" + id + "\sAND custrecord_flore_end_time IS NULL";
+		String query = commonQueryData + "WHERE customrecord_flore_session.id LIKE " + id + " AND custrecord_flore_end_time IS NULL";
 		
 		query = query.replace("\n", "").replace("\t", "");
 		return query;
@@ -147,6 +113,8 @@ public class QueriedflORESession
 		
 		if(buildRecordId != null && !buildRecordId.equals("")) session.setBuildRecord(new NsID(buildRecordId, buildRecordName));
 		if(buildUuid != null) session.setBuildUuid(buildUuid);
+		if(lineName != null) session.setLineItemName(lineName);
+		if(oneDriveLink != null) session.setOneDriveLink(oneDriveLink);
 		
 		return session;
 	}
