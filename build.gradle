@@ -14,7 +14,7 @@ java {
 }
 
 group = 'design.ore.api'
-version = '1.1.7'
+version = '1.1.8'
 def packageName = 'orenetbridge'
 archivesBaseName = "${packageName}"
 
