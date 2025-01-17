@@ -66,14 +66,25 @@ public class QueriedflORESession
 			
 			wo.id AS workOrderId,\s
 			wo.tranid AS workOrderName,\s
-				
-			wo.entity AS entityId,\s
-			BUILTIN.DF(wo.entity) AS entityName\s
+			
+			CASE\s
+			WHEN custrecord_flore_associated_so IS NOT NULL THEN so.entity\s
+			WHEN custrecord_flore_associated_wo IS NOT NULL THEN wo.entity\s
+			WHEN custrecord_flore_associated_pr IS NOT NULL THEN pr.entity\s
+			ELSE NULL\s
+			END AS entityId,\s
+			
+			CASE\s
+			WHEN custrecord_flore_associated_so IS NOT NULL THEN BUILTIN.DF(so.entity)\s
+			WHEN custrecord_flore_associated_wo IS NOT NULL THEN BUILTIN.DF(wo.entity)\s
+			WHEN custrecord_flore_associated_pr IS NOT NULL THEN BUILTIN.DF(pr.entity)\s
+			ELSE NULL\s
+			END AS entityName\s
 			
 			FROM customrecord_flore_session\s
 			
 			LEFT JOIN Transaction AS so ON so.id = custrecord_flore_associated_so\s
-			LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_work_order\s
+			LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_associated_wo\s
 			LEFT JOIN Transaction AS pr ON pr.id = custrecord_flore_associated_pr\s
 		""";
 
