@@ -16,5 +16,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class flORELineDataPacket
 {
-	String itemName, buildUid, buildRecordId;
+	String itemName, buildUid, buildRecordId, description;
 }
