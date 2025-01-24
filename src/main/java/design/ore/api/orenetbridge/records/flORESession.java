@@ -50,6 +50,7 @@ public class flORESession
 	@JsonProperty("custrecord_flore_associated_pr") NsID associatedProposal;
 	@JsonProperty("custrecord_flore_line_item_name") String lineItemName;
 	@JsonProperty("custrecord_fs_onedrive_link") String oneDriveLink;
+	@JsonProperty("custrecord_fs_ncr_routing_step") String ncrRoutingStep;
 	
 	@JsonIgnore boolean selected;
 	@JsonIgnore protected NsID customer;

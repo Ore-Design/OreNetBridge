@@ -6,9 +6,10 @@ import java.util.Optional;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,6 +38,12 @@ public class NetsuiteAPI
 	private final String tokenID;
 	private final String tokenSecret;
 	private final String accountRealm;
+	
+	private final int timeout = 5; // In minutes
+	private final RequestConfig config = RequestConfig.custom()
+			  .setConnectTimeout(timeout * 1000 * 60)
+			  .setConnectionRequestTimeout(timeout * 1000 * 60)
+			  .setSocketTimeout(timeout * 1000 * 60).build();
 	
 	@Getter @Setter private NSEmployee currentUsingEmployee = null;
 	
@@ -82,7 +89,7 @@ public class NetsuiteAPI
 		try { logger.debug("Sending location response request with payload: " + mapper.writeValueAsString(payload)); }
 		catch (JsonProcessingException e) { logger.warn(e.getMessage()); }
 		
-		try(CloseableHttpClient httpClient = HttpClients.createDefault())
+		try(CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build())
 		{
 			Pair<Long, HttpRequestBase> requestBase = null;
 			while(true)
@@ -176,9 +183,8 @@ public class NetsuiteAPI
 		HttpResponse response = null;
 		
 		Pair<Long, HttpRequestBase> requestBase = null;
-		try(CloseableHttpClient httpClient = HttpClients.createDefault())
-		{
-			
+		try(CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build())
+		{	
 			String responseBody = "";
 			while(true)
 			{
@@ -251,7 +257,7 @@ public class NetsuiteAPI
 		OAuthBase oAuth = new OAuthBase();
 		HttpResponse response = null;
 		
-		try(CloseableHttpClient httpClient = HttpClients.createDefault())
+		try(CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build())
 		{
 			while(true)
 			{
@@ -287,7 +293,7 @@ public class NetsuiteAPI
 			catch (JsonProcessingException e) { logger.warn(e.toString()); }
         }
 		
-		try(CloseableHttpClient httpClient = HttpClients.createDefault())
+		try(CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build())
 		{
 			Pair<Long, HttpRequestBase> requestBase = null;
 			while(true)

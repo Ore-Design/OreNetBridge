@@ -23,7 +23,7 @@ import lombok.Setter;
 public class QueriedflORESession
 {	
 	@JsonProperty String id, userId, userName, entityId, entityName, proposalId, proposalName, salesOrderId, salesOrderName,
-		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName, oneDriveLink;
+		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName, oneDriveLink, ncrRoutingStep;
 	
 	Integer buildUuid;
 	
@@ -51,12 +51,13 @@ public class QueriedflORESession
 			custrecord_flore_user AS userId,\s
 			BUILTIN.DF(custrecord_flore_user) AS userName,\s
 			custrecord_associated_ncr AS ncrId,\s
-			BUILTIN.DF(custrecord_associated_ncr) AS ncrName,\s
+			ncr.custrecord_flore_ncr_id AS ncrName,\s
 			custrecord_flore_wocompletion AS completionId,\s
 			BUILTIN.DF(custrecord_flore_wocompletion) AS completionName,\s
 			custrecord_flore_build_record AS buildRecordId,\s
 			BUILTIN.DF(custrecord_flore_build_record) AS buildRecordName,\s
 			custrecord_flore_build_uuid AS buildUuid,\s
+			custrecord_fs_ncr_routing_step AS ncrRoutingStep,\s
 			
 			pr.id AS proposalId,\s
 			pr.tranid AS proposalName,\s
@@ -86,6 +87,7 @@ public class QueriedflORESession
 			LEFT JOIN Transaction AS so ON so.id = custrecord_flore_associated_so\s
 			LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_associated_wo\s
 			LEFT JOIN Transaction AS pr ON pr.id = custrecord_flore_associated_pr\s
+			LEFT JOIN customrecordorange_tag AS ncr ON ncr.id = custrecord_associated_ncr\s
 		""";
 
 	@JsonIgnore
@@ -121,6 +123,8 @@ public class QueriedflORESession
 			session.setAssociatedWO(new NsID(workOrderId, workOrderName));
 			session.setWorkOrder(new NsID(workOrderId, workOrderName));
 		}
+		
+		if(ncrId != null && !ncrId.equals("")) session.setAssociatedNCR(new NsID(ncrId, ncrName));
 		
 		if(buildRecordId != null && !buildRecordId.equals("")) session.setBuildRecord(new NsID(buildRecordId, buildRecordName));
 		if(buildUuid != null) session.setBuildUuid(buildUuid);
