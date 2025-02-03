@@ -30,9 +30,9 @@ public class WorkOrder
 	NsID entity;
 	NsID billOfMaterials;
 	NsID orderStatus;
-	@JsonProperty("custbody_square_feet") double squareFeet;
-	double quantity;
-	@JsonProperty("isWip") boolean isWip;
+	@JsonProperty("custbody_square_feet") Double squareFeet;
+	Double quantity;
+	@JsonProperty("isWip") Boolean isWip;
 	@JsonProperty("custbody_exp_ship_date") String expectedShipDate;
 	@JsonProperty("custbodymx_cad_date_wo") String cutFileDate;
 	@JsonProperty("custbody_flore_notes") String notes;
@@ -40,7 +40,7 @@ public class WorkOrder
 	String tranId;
 	String memo;
 	NsItemList<WorkOrderComponent> item;
-	boolean expandassembly;
+	Boolean expandassembly;
 	
 	public WorkOrder() {}
 	
