@@ -8,9 +8,12 @@ import java.time.temporal.ChronoUnit;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import design.ore.api.orenetbridge.generic.NsID;
+import design.ore.api.orenetbridge.generic.NsItemList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +21,7 @@ import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+@JsonInclude(Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -51,9 +55,11 @@ public class flORESession
 	@JsonProperty("custrecord_flore_line_item_name") String lineItemName;
 	@JsonProperty("custrecord_fs_onedrive_link") String oneDriveLink;
 	@JsonProperty("custrecord_fs_ncr_routing_step") String ncrRoutingStep;
+	@JsonProperty("custrecord_fs_odd_job_steps") NsItemList<NsID> oddJobSteps;
+	
+	@JsonIgnore protected NsID customer;
 	
 	@JsonIgnore boolean selected;
-	@JsonIgnore protected NsID customer;
 	@JsonIgnore int requiredQty;
 	@JsonIgnore protected int completedPreviously = 0;
 
@@ -84,6 +90,7 @@ public class flORESession
 		this.completed = completed;
 		this.requiredQty = requiredQty;
 	}
+	
 	public flORESession(String id, NsID user, NsID associatedRecord, String routingStep)
 	{
 		this.id = id;
@@ -92,7 +99,7 @@ public class flORESession
 		this.startTime = Instant.now();
 		this.routingStep = routingStep;
 		
-		if(associatedRecord.getRefName() != null && !associatedRecord.getRefName().equals(""))
+		if(associatedRecord != null && associatedRecord.getRefName() != null && !associatedRecord.getRefName().equals(""))
 		{
 			String upperName = associatedRecord.getRefName().toUpperCase();
 			if(upperName.startsWith("WO")) associatedWO = associatedRecord;

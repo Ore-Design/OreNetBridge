@@ -8,13 +8,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import design.ore.api.orenetbridge.generic.NsID;
+import design.ore.api.orenetbridge.generic.NsItemList;
 import design.ore.api.orenetbridge.records.flORESession;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@JsonIgnoreProperties(value = "tableDisplay", ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
 @Getter
 @Setter
@@ -23,7 +24,8 @@ import lombok.Setter;
 public class QueriedflORESession
 {	
 	@JsonProperty String id, userId, userName, entityId, entityName, proposalId, proposalName, salesOrderId, salesOrderName,
-		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName, oneDriveLink, ncrRoutingStep;
+		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName,
+		oneDriveLink, ncrRoutingStep, oddJobSteps;
 	
 	Integer buildUuid;
 	
@@ -58,6 +60,7 @@ public class QueriedflORESession
 			BUILTIN.DF(custrecord_flore_build_record) AS buildRecordName,\s
 			custrecord_flore_build_uuid AS buildUuid,\s
 			custrecord_fs_ncr_routing_step AS ncrRoutingStep,\s
+			custrecord_fs_odd_job_steps AS oddJobSteps,\s
 			
 			pr.id AS proposalId,\s
 			pr.tranid AS proposalName,\s
@@ -103,9 +106,18 @@ public class QueriedflORESession
 	}
 
 	@JsonIgnore
-	public static String getSessionByIdWithData(String id)
+	public static String getSessionByIdWithDataQuery(String id)
 	{
 		String query = commonQueryData + "WHERE customrecord_flore_session.id LIKE " + id + " AND custrecord_flore_end_time IS NULL";
+		
+		query = query.replace("\n", "").replace("\t", "");
+		return query;
+	}
+
+	@JsonIgnore
+	public static String getAllOpenSessionsAdminQuery()
+	{
+		String query = commonQueryData + "WHERE custrecord_flore_end_time IS NULL";
 		
 		query = query.replace("\n", "").replace("\t", "");
 		return query;
@@ -113,11 +125,19 @@ public class QueriedflORESession
 	
 	public flORESession toflORESession()
 	{
-		flORESession session = new flORESession(id, new NsID(userId, userName), new NsID(workOrderId, workOrderName),
+		flORESession session = new flORESession(id, new NsID(userId, userName), null,
 			new NsID(entityId, entityName), startTime, endTime, routingStep, minutes, hours, completed, 0);
 
-		if(proposalId != null && !proposalId.equals("")) session.setAssociatedProposal(new NsID(proposalId, proposalName));
-		if(salesOrderId != null && !salesOrderId.equals("")) session.setAssociatedSO(new NsID(salesOrderId, salesOrderName));
+		if(proposalId != null && !proposalId.equals(""))
+		{
+			session.setAssociatedProposal(new NsID(proposalId, proposalName));
+			session.setWorkOrder(new NsID(proposalId, proposalName));
+		}
+		if(salesOrderId != null && !salesOrderId.equals(""))
+		{
+			session.setAssociatedSO(new NsID(salesOrderId, salesOrderName));
+			session.setWorkOrder(new NsID(salesOrderId, salesOrderName));
+		}
 		if(workOrderId != null && !workOrderId.equals(""))
 		{
 			session.setAssociatedWO(new NsID(workOrderId, workOrderName));
@@ -130,6 +150,16 @@ public class QueriedflORESession
 		if(buildUuid != null) session.setBuildUuid(buildUuid);
 		if(lineName != null) session.setLineItemName(lineName);
 		if(oneDriveLink != null) session.setOneDriveLink(oneDriveLink);
+		
+		if(oddJobSteps != null)
+		{
+			NsItemList<NsID> itemList = new NsItemList<>();
+			
+			for(String id : oddJobSteps.replaceAll(" ", "").split(","))
+			{ itemList.addItem(new NsID(id)); }
+			
+			session.setOddJobSteps(itemList);
+		}
 		
 		return session;
 	}

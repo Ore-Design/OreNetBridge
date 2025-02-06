@@ -33,7 +33,7 @@ public class QueriedNSEmployee
 		permsList = new ArrayList<>();
 		
 		for(String perm : perms.replaceAll(" ", "").split(","))
-		{ permsList.add(perm); }
+		{ permsList.add(perm.toUpperCase()); }
 	}
 	
 	public Long getGoalDayMillis()
