@@ -1,7 +1,5 @@
 package design.ore.api.orenetbridge.packets;
 
-import java.time.Instant;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -20,5 +18,5 @@ public class flORESessionStopRequest
 {
 	String sessionId, note;
 	int quantityCompleted;
-	Instant endTime;
+	Long endMillis;
 }
