@@ -26,7 +26,7 @@ public class QueriedflORESession
 {	
 	@JsonProperty String id, userId, userName, entityId, entityName, proposalId, proposalName, salesOrderId, salesOrderName,
 		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName,
-		oneDriveLink, ncrRoutingStep, oddJobSteps;
+		oneDriveLink, ncrRoutingStep, oddJobSteps, soNotes, woNotes, prNotes;
 	
 	Integer buildUuid;
 	
@@ -62,6 +62,10 @@ public class QueriedflORESession
 			custrecord_flore_build_uuid AS buildUuid,\s
 			custrecord_fs_ncr_routing_step AS ncrRoutingStep,\s
 			custrecord_fs_odd_job_steps AS oddJobSteps,\s
+			
+			so.custbody_so_flore_notes AS soNotes,\s
+			wo.custbody_flore_notes AS woNotes,\s
+			pr.custbody_so_flore_notes AS prNotes,\s
 			
 			pr.id AS proposalId,\s
 			pr.tranid AS proposalName,\s
@@ -162,6 +166,10 @@ public class QueriedflORESession
 			session.setAssociatedWO(new NsID(workOrderId, workOrderName));
 			session.setWorkOrder(new NsID(workOrderId, workOrderName));
 		}
+		
+		if(woNotes != null && !woNotes.equals("")) session.setNotes(woNotes);
+		if(soNotes != null && !soNotes.equals("")) session.setNotes(soNotes);
+		if(prNotes != null && !prNotes.equals("")) session.setNotes(prNotes);
 		
 		if(ncrId != null && !ncrId.equals("")) session.setAssociatedNCR(new NsID(ncrId, ncrName));
 		

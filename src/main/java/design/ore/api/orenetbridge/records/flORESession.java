@@ -56,6 +56,8 @@ public class flORESession
 	@JsonProperty("custrecord_fs_onedrive_link") String oneDriveLink;
 	@JsonProperty("custrecord_fs_ncr_routing_step") String ncrRoutingStep;
 	@JsonProperty("custrecord_fs_odd_job_steps") NsItemList<NsID> oddJobSteps;
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY) protected String notes;
 	
 	@JsonIgnore protected NsID customer;
 	
