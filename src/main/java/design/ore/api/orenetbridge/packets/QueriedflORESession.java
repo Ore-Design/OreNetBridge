@@ -1,6 +1,7 @@
 package design.ore.api.orenetbridge.packets;
 
 import java.time.Instant;
+import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -109,6 +110,24 @@ public class QueriedflORESession
 	public static String getSessionByIdWithDataQuery(String id)
 	{
 		String query = commonQueryData + "WHERE customrecord_flore_session.id LIKE " + id + " AND custrecord_flore_end_time IS NULL";
+		
+		query = query.replace("\n", "").replace("\t", "");
+		return query;
+	}
+
+	@JsonIgnore
+	public static String getAllOpenSessionsDeptLeadQuery(Collection<String> routingSteps)
+	{
+		String routingStepsStr = "(";
+		for(String str : routingSteps)
+		{
+			if(!routingStepsStr.equals("(")) routingStepsStr += " OR ";
+			
+			routingStepsStr += ("custrecord_flore_routing_step LIKE '" + str + "'");
+		}
+		routingStepsStr += ")";
+		
+		String query = commonQueryData + "WHERE custrecord_flore_end_time IS NULL AND " + routingStepsStr;
 		
 		query = query.replace("\n", "").replace("\t", "");
 		return query;
