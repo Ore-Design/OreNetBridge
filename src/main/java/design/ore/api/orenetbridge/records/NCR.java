@@ -40,6 +40,8 @@ public class NCR extends ValueStorageRecord
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="UTC")
 	@JsonProperty("custrecordot_date_issued") Date dateIssued;
 	
+	@JsonProperty("custrecord_flore_ncr_id") String ncrId;
+	
 	@JsonProperty("custrecord_rwt_fo") Integer frontOfficeTime;
 	@JsonProperty("custrecordot_rwt_cad") Integer cadTime;
 	@JsonProperty("custrecordot_rwt_prefab") Integer prefabTime;
@@ -47,45 +49,46 @@ public class NCR extends ValueStorageRecord
 	@JsonProperty("custrecordot_rwt_finish") Integer finishingTime;
 	@JsonProperty("custrecordot_rwt_pack") Integer packagingTime;
 	
-	public static NCR proposal(NsID proposalID, NsID departmentResponsible, NsID reportingDepartment, NsID defect, String partNumber, int buildUID)
+	public static NCR proposal(NsID proposalID, NsID departmentResponsible, NsID reportingDepartment, NsID defect, String ncrId, NsID operatorResponsible)
 	{
 		NCR newNCR = new NCR();
 		newNCR.setProposal(proposalID);
 		newNCR.setDepartmentResponsible(departmentResponsible);
 		newNCR.setReportingDepartment(reportingDepartment);
 		newNCR.setDefect(defect);
-		newNCR.setPartNumber(partNumber);
 		newNCR.setDateIssued(Date.from(Instant.now()));
-		newNCR.setAssociatedBuildUID(buildUID);
+		newNCR.setOperatorResponsible(operatorResponsible);
+		newNCR.setNcrId(ncrId);
 		
 		return newNCR;
 	}
 	
-	public static NCR salesOrder(NsID salesOrderID, NsID departmentResponsible, NsID reportingDepartment, NsID defect, String partNumber, int buildUID)
+	public static NCR salesOrder(NsID salesOrderID, NsID departmentResponsible, NsID reportingDepartment, NsID defect, int buildUID, String ncrId, NsID operatorResponsible)
 	{
 		NCR newNCR = new NCR();
 		newNCR.setSalesOrder(salesOrderID);
 		newNCR.setDepartmentResponsible(departmentResponsible);
 		newNCR.setReportingDepartment(reportingDepartment);
 		newNCR.setDefect(defect);
-		newNCR.setPartNumber(partNumber);
 		newNCR.setDateIssued(Date.from(Instant.now()));
 		newNCR.setAssociatedBuildUID(buildUID);
+		newNCR.setOperatorResponsible(operatorResponsible);
+		newNCR.setNcrId(ncrId);
 		
 		return newNCR;
 	}
 	
-	public static NCR workOrder(NsID workOrderID, NsID departmentResponsible, NsID reportingDepartment, NsID defect, String partNumber, int buildUID, NsID salesOrderID)
+	public static NCR workOrder(NsID workOrderID, NsID departmentResponsible, NsID reportingDepartment, NsID defect, String partNumber, String ncrId, NsID operatorResponsible)
 	{
 		NCR newNCR = new NCR();
 		newNCR.setWorkOrder(workOrderID);
 		newNCR.setDepartmentResponsible(departmentResponsible);
 		newNCR.setReportingDepartment(reportingDepartment);
 		newNCR.setDefect(defect);
-		newNCR.setPartNumber(partNumber);
 		newNCR.setDateIssued(Date.from(Instant.now()));
-		newNCR.setAssociatedBuildUID(buildUID);
-		newNCR.setSalesOrder(salesOrderID);
+		newNCR.setPartNumber(partNumber);
+		newNCR.setOperatorResponsible(operatorResponsible);
+		newNCR.setNcrId(ncrId);
 		
 		return newNCR;
 	}
