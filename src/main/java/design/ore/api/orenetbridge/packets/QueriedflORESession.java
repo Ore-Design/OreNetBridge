@@ -26,7 +26,7 @@ public class QueriedflORESession
 {	
 	@JsonProperty String id, userId, userName, entityId, entityName, proposalId, proposalName, salesOrderId, salesOrderName,
 		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName,
-		oneDriveLink, ncrRoutingStep, oddJobSteps, soNotes, woNotes, prNotes;
+		oneDriveLink, ncrRoutingStep, oddJobSteps, soNotes, woNotes, prNotes, cadSubtaskId, cadSubtaskName, estSubtaskId, estSubtaskName;
 	
 	Integer buildUuid;
 	
@@ -62,6 +62,11 @@ public class QueriedflORESession
 			custrecord_flore_build_uuid AS buildUuid,\s
 			custrecord_fs_ncr_routing_step AS ncrRoutingStep,\s
 			custrecord_fs_odd_job_steps AS oddJobSteps,\s
+			
+			custrecord_fs_est_subtask AS estSubtaskId,\s
+			BUILTIN.DF(custrecord_fs_est_subtask) AS estSubtaskName,\s
+			custrecord_fs_cad_subtask AS cadSubtaskId,\s
+			BUILTIN.DF(custrecord_fs_cad_subtask) AS cadSubtaskName,\s
 			
 			so.custbody_so_flore_notes AS soNotes,\s
 			wo.custbody_flore_notes AS woNotes,\s
@@ -177,6 +182,9 @@ public class QueriedflORESession
 		if(buildUuid != null) session.setBuildUuid(buildUuid);
 		if(lineName != null) session.setLineItemName(lineName);
 		if(oneDriveLink != null) session.setOneDriveLink(oneDriveLink);
+		
+		if(cadSubtaskId != null && !cadSubtaskId.equals("")) session.setCadSubtask(new NsID(cadSubtaskId, cadSubtaskName));
+		if(estSubtaskId != null && !estSubtaskId.equals("")) session.setEstimatingSubtask(new NsID(estSubtaskId, estSubtaskName));
 		
 		if(oddJobSteps != null)
 		{
