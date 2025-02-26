@@ -64,6 +64,14 @@ public class QueriedNSEmployee
 		return query;
 	}
 	
+	public static String getNSEmployeeQueryWithMatchingEmail(String email)
+	{
+		String query = getCommonQueryStr() + " WHERE employee.isinactive LIKE 'F' AND employee.email LIKE '" + email + "'";
+		
+		query = query.replace("\n", "").replace("\t", "");
+		return query;
+	}
+	
 	public static String getAllNSEmployeesQuery()
 	{
 		return getCommonQueryStr() + " WHERE employee.isinactive LIKE 'F'";
