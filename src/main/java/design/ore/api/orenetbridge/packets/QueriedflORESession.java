@@ -26,7 +26,8 @@ public class QueriedflORESession
 {	
 	@JsonProperty String id, userId, userName, entityId, entityName, proposalId, proposalName, salesOrderId, salesOrderName,
 		workOrderId, workOrderName, buildRecordId, buildRecordName, ncrId, ncrName, completionId, completionName, lineName,
-		oneDriveLink, ncrRoutingStep, oddJobSteps, soNotes, woNotes, prNotes, cadSubtaskId, cadSubtaskName, estSubtaskId, estSubtaskName;
+		oneDriveLink, ncrRoutingStep, oddJobSteps, soNotes, woNotes, prNotes, cadSubtaskId, cadSubtaskName, estSubtaskId,
+		estSubtaskName, oldRecordId, oldRecordName;
 	
 	Integer buildUuid;
 	
@@ -62,6 +63,8 @@ public class QueriedflORESession
 			custrecord_flore_build_uuid AS buildUuid,\s
 			custrecord_fs_ncr_routing_step AS ncrRoutingStep,\s
 			custrecord_fs_odd_job_steps AS oddJobSteps,\s
+			custrecord_flore_work_order AS oldRecordId,\s
+			BUILTIN.DF(custrecord_flore_work_order) AS oldRecordName,\s
 			
 			custrecord_fs_est_subtask AS estSubtaskId,\s
 			BUILTIN.DF(custrecord_fs_est_subtask) AS estSubtaskName,\s
@@ -110,6 +113,15 @@ public class QueriedflORESession
 		// LEFT JOIN Transaction AS wo ON wo.id = custrecord_flore_associated_wo\s
 		
 		String query = commonQueryData + "WHERE custrecord_flore_user LIKE " + id + " AND custrecord_flore_end_time IS NULL";
+		
+		query = query.replace("\n", "").replace("\t", "");
+		return query;
+	}
+
+	@JsonIgnore
+	public static String openSessionsWhereSalesOrderIdMatches(String soId)
+	{
+		String query = commonQueryData + "WHERE (custrecord_flore_associated_so LIKE " + soId + " OR custrecord_flore_work_order LIKE " + soId + ")";
 		
 		query = query.replace("\n", "").replace("\t", "");
 		return query;
