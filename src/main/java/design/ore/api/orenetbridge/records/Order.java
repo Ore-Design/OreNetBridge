@@ -30,6 +30,7 @@ public class Order extends ValueStorageRecord
 	String email;
 	String tranId;
 	@JsonProperty("custbody_ore3d_tag_data")String tagData;
+	@JsonProperty("custbody_onedrive_file")String onedriveLink;
 	@JsonProperty("custbody_ore3d_record_is_locked") String recordIsLocked;
 	NSAddress billingAddress;
 	NSAddress shippingAddress;

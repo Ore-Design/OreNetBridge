@@ -85,8 +85,8 @@ public class QueriedNSEmployee
 				employee.entityid AS name,\s
 				employee.custentity_flore_day_goal_override AS dayMinGoalOverride,\s
 				employee.custentity_flore_week_time_goal_override AS weekMinGoalOverride,\s
-				custentity_flore_perms AS perms,\s
-				initials,\s
+				employee.custentity_flore_perms AS perms,\s
+				employee.initials,\s
 				customrecordot_dept_resp.id AS departmentId,\s
 				customrecordot_dept_resp.name AS department,\s
 				customrecordot_dept_resp.custrecord_flore_default_op_step AS defaultOpStep,\s

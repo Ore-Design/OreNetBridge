@@ -16,5 +16,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QueriedLineItem
 {
-	String name, buildUID, description, buildRecordId, buildUid, workOrders;
+	String salesOrderId, name, buildUID, description, buildRecordId, buildUid, workOrders;
 }
