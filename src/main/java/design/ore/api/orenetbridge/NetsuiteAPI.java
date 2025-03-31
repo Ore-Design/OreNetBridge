@@ -85,44 +85,87 @@ public class NetsuiteAPI
 	{
 		OAuthBase oAuth = new OAuthBase();
 		HttpResponse response = null;
-		
+
 		try { logger.debug("Sending location response request with payload: " + mapper.writeValueAsString(payload)); }
 		catch (JsonProcessingException e) { logger.warn(e.getMessage()); }
-		
+
 		try(CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build())
 		{
 			Pair<Long, HttpRequestBase> requestBase = null;
 			while(true)
 			{
-				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);	
-		        response = httpClient.execute(requestBase.getValue());
-			
+				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);
+				response = httpClient.execute(requestBase.getValue());
+
 				if(response == null)
 				{
 					logger.warn("Response " + requestBase.getKey() + " returned null!");
 					return "";
 				}
-				
+
 				if(response.getStatusLine().getStatusCode() != 429) break;
 			}
-			
+
 			if(response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
 			{
 				logger.warn("Response " + requestBase.getKey() + " returned error code " + response.getStatusLine().getStatusCode() + "!\n" + EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
 				return "";
 			}
-			
+
 			for(Header h : response.getAllHeaders())
 			{
 				if(h.getName().equals("Location")) return h.getValue();
 			}
-			
+
 			return "";
 		}
 		catch (Exception e)
 		{
 			logger.info("Error parsing response data!\n" + Util.throwableToString(e));
 			return "";
+		}
+	}
+
+	public String restLocationResponseThrows(String destination, String method, Object payload, NetsuiteEndpoint endpoint) throws Exception
+	{
+		OAuthBase oAuth = new OAuthBase();
+		HttpResponse response = null;
+
+		try
+		{
+			logger.debug("Sending location response request with payload: " + mapper.writeValueAsString(payload));
+		} catch (JsonProcessingException e)
+		{
+			logger.warn(e.getMessage());
+		}
+
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build())
+		{
+			Pair<Long, HttpRequestBase> requestBase = null;
+			while (true)
+			{
+				requestBase = oAuth.generateRequestBase(apiURL(endpoint, destination, method.equalsIgnoreCase("GET")), consumerKey, consumerSecret, tokenID, tokenSecret, method, accountRealm, payload);
+				response = httpClient.execute(requestBase.getValue());
+
+				if (response == null) throw new Exception("Response " + requestBase.getKey() + " returned null!");
+
+				if (response.getStatusLine().getStatusCode() != 429) break;
+			}
+
+			if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299)
+			{
+				throw new Exception("Response " + requestBase.getKey() + " returned error code " + response.getStatusLine().getStatusCode() + "!\n" + EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
+			}
+
+			for (Header h : response.getAllHeaders())
+			{
+				if (h.getName().equals("Location")) return h.getValue();
+			}
+
+			throw new Exception("No Location header found!");
+		} catch (Exception e)
+		{
+			throw new Exception("Error parsing response data!\n" + Util.throwableToString(e));
 		}
 	}
 
