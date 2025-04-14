@@ -21,6 +21,7 @@ public class ManufacturingRoutingStep
 	double machineResources;
 	NsID manufacturingCostTemplate;
 	NsID manufacturingWorkCenter;
+	NsID connectionType;
 	String operationName;
 	int operationSequence;
 	double operationYield;
@@ -38,5 +39,8 @@ public class ManufacturingRoutingStep
 		this.runRate = runRate;
 		this.setupTime = setupTime;
 		this.operationName = operationName;
+
+		if(operationSequence == 0) connectionType = null;
+		else connectionType = new NsID("FS");
 	}
 }
