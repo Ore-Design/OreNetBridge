@@ -14,7 +14,7 @@ java {
 }
 
 group = 'design.ore.api'
-version = '1.1.15'
+version = '1.1.16'
 def packageName = 'orenetbridge'
 archivesBaseName = "${packageName}"
 
@@ -33,9 +33,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
-	implementation 'commons-io:commons-io:2.13.0'
-	implementation 'ch.qos.logback:logback-classic:1.4.11'
-	implementation 'ch.qos.logback:logback-core:1.4.11'
+	implementation 'commons-io:commons-io:2.14.0'
+	implementation 'ch.qos.logback:logback-classic:1.4.12'
+	implementation 'ch.qos.logback:logback-core:1.5.13'
 }
 
 publishing {
