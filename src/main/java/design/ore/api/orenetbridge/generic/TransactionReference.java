@@ -22,6 +22,7 @@ public class TransactionReference
 	@JsonProperty("tranid")
 	String name;
 	Boolean wip;
+	String status;
 
 	public void setWipFromStr(String str) { wip = str.toLowerCase().contains("t"); }
 

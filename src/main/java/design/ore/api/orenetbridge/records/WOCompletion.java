@@ -25,6 +25,7 @@ public class WOCompletion
 	NsID startOperation;
 	NsID endOperation;
 	NsItemList<OperationCompletion> operation;
+	String trandate;
 	@JsonProperty("custbody_flore_user") NsID user;
 	@JsonProperty("custbody_flore_session") NsID flORESession;
 	@JsonProperty("custbody_flore_time") Double time;
