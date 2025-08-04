@@ -172,12 +172,15 @@ public class NetsuiteAPI
 	public <T> Optional<T> rest(Class<T> clazz, String destination, String method, Object payload, NetsuiteEndpoint endpoint)
 	{
 		String responseJson = restRaw(destination, method, payload, endpoint);
-		if(responseJson.equals("")) return Optional.empty();
+		if(responseJson.isEmpty())
+		{
+			logger.warn("Rest response returned empty!");
+			return Optional.empty();
+		}
 		else
 		{
-			T val;
-			try { val = mapper.readValue(responseJson, clazz); return Optional.of(val); }
-			catch (JsonProcessingException e) { logger.warn(Util.formatThrowable("Error parsing response JSON", e)); return Optional.empty(); }
+			try { return Optional.of(mapper.readValue(responseJson, clazz)); }
+			catch (JsonProcessingException e) { logger.warn("Error parsing response JSON!", e); return Optional.empty(); }
 		}
 	}
 
