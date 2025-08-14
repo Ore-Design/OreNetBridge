@@ -36,6 +36,7 @@ public class Order extends ValueStorageRecord
 	NSAddress shippingAddress;
 	NsItemList<LineItem> item;
 	LocalDate dueDate;
+	@JsonProperty("custbodykc_proposal_due_date") LocalDate proposalDueDate;
 	@JsonProperty("custbody_ore3d_copied_from") NsID copiedFrom;
 	@JsonProperty("custbody_sales_process_status") NsID salesStatus;
 	@JsonProperty("custbody_ore3d_edit_log") String editLog;
