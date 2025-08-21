@@ -25,5 +25,6 @@ public class QueriedBOMComponent extends ValueStorageRecord
 	@JsonProperty("custitem_ore3d_price") String overridePrice;
 	@JsonProperty("custitem_ore3d_searchtag") String searchableTags;
 	@JsonProperty("custitem_ore3d_unittype") String unitTypeOverride;
+	Integer marginOverride;
 	String stockUnit;
 }

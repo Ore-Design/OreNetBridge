@@ -21,6 +21,23 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QueriedManufacturingOperationTask implements Comparable<QueriedManufacturingOperationTask>
 {
+	public QueriedManufacturingOperationTask(String id, String title, String operationSequence, String workOrder, String status,
+		Integer inputQuantity, Integer completedQuantity, String description, Double runRate, boolean disable, String newWorkOrder, Integer buildUID)
+	{
+		this.id = id;
+		this.title = title;
+		this.operationSequence = operationSequence;
+		this.workOrder = workOrder;
+		this.status = status;
+		this.inputQuantity = inputQuantity;
+		this.completedQuantity = completedQuantity;
+		this.description = description;
+		this.runRate = runRate;
+		this.disable = disable;
+		this.newWorkOrder = newWorkOrder;
+		this.buildUID = buildUID;
+	}
+
 	String id = "";
 	String title = "UNKNOWN";
 	String operationSequence = "0";
@@ -33,6 +50,8 @@ public class QueriedManufacturingOperationTask implements Comparable<QueriedManu
 	@JsonIgnore boolean disable = false;
 	@JsonIgnore String newWorkOrder = "";
 	@JsonIgnore Integer buildUID;
+
+	boolean ignored = false;
 	
 	public int getSequenceAsInt()
 	{
@@ -64,7 +83,6 @@ public class QueriedManufacturingOperationTask implements Comparable<QueriedManu
 		public static final String NOT_STARTED = "NOTSTART";
 		public static final String IN_PROGRESS = "PROGRESS";
 		public static final String COMPLETED = "COMPLETE";
-		
 	}
 
 	@Override
