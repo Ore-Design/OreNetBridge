@@ -45,6 +45,7 @@ public class LineItem extends ValueStorageRecord
 	NsID item;
 	@JsonProperty("custcolhours_pack") Integer packagingTime;
 	@JsonProperty("custcolhours_prefab") Integer prefabTime;
+	@JsonProperty("custcol_complexity") Integer complexity;
 	@JsonProperty("custcol1") double weight;
 	NsID price;
 	Integer line;
